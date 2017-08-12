@@ -1,29 +1,34 @@
-#include<string.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<sys/stat.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 /* 
  * Does roughly the same thing as basename(char*) from libgen.h,
  * which means it returns pure file name with preceding path cut.
- * <Turned out it was present even on Gentoo,
+ * <Turned out it was present in <string.h>,
  * but I'll leave it as it is>
  */
 char* basename(char* full_path) {
     /* The path might be needed later, so let's create a copy of it! */
-    char* full_path_copy = malloc(sizeof(full_path));
+    char* full_path_copy = malloc(strlen(full_path) + 1);
     strcpy(full_path_copy, full_path);
-    while (strstr(full_path_copy, "/")) {
-        strncpy(full_path_copy, full_path_copy, strlen(full_path_copy));
+    puts(full_path_copy);
+    char* filename = strstr(full_path_copy, "/"); 
+    puts(filename);
+    while (filename) {
+        strncpy(full_path_copy, full_path_copy, strlen(filename));
+        filename = strstr(full_path_copy, "/");
+        puts(filename);
     }
     return full_path_copy;
 }
 
 /*
- * Creates a temporary folder with a name that resembles file name.
+ * Returns a temporary folder name which resembles the file name.
  */
-void create_temp_folder(char* filename) {
+char* temp_folder_name(char* filename) {
     char* dot_position = strchr(filename, '.');
     /* Remove the extension part first (wo_ext == without extension) */
     char* wo_ext = malloc(sizeof(filename));
@@ -36,6 +41,5 @@ void create_temp_folder(char* filename) {
     strcpy(folder_name, temp_prefix);
     strcat(folder_name, wo_ext);
     puts(folder_name);
-    /* S_IRWXU is rwx equivalent in mode_t */
-    mkdir(folder_name, S_IRWXU);
+    return folder_name;
 }

@@ -1,9 +1,11 @@
-#include<unistd.h>
-#include<string.h>
-#include<stdlib.h>
-#include<libgen.h>
-#include<editline/readline.h>
-#include "utils.h"
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <libgen.h>
+#include <sys/stat.h>
+#include <editline/readline.h>
+#include "fsops.h"
+
 /*
  * Pixav is a tool that transforms a video file into an image made of average
  * pixel colors of its every frame.
@@ -26,5 +28,7 @@ int main(int argc, char** argv) {
     }
     char* video_file_name = basename(video_file_path);
     puts(video_file_name);
-    create_temp_folder(video_file_name);
+    char* dirname = temp_folder_name(video_file_name);
+    /* S_IRWXU is user's rwx equivalent in mode_t */
+    mkdir(dirname, S_IRWXU);
 }
