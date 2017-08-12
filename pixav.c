@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <editline/readline.h>
 #include "fsops.h"
+#include "vidops.h"
 
 /*
  * Pixav is a tool that transforms a video file into an image made of average
@@ -31,4 +32,5 @@ int main(int argc, char** argv) {
     char* dirname = temp_folder_name(video_file_name);
     /* S_IRWXU is user's rwx equivalent in mode_t */
     mkdir(dirname, S_IRWXU);
+    split_to_frames(video_file_path, dirname);
 }
