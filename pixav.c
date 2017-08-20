@@ -33,4 +33,6 @@ int main(int argc, char** argv) {
     /* S_IRWXU is user's rwx equivalent in mode_t */
     mkdir(dirname, S_IRWXU);
     split_to_frames(video_file_path, dirname);
+    chdir(dirname);
+    tmpdirloop();
 }

@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 /* 
@@ -42,4 +44,21 @@ char* temp_folder_name(char* filename) {
     strcat(folder_name, wo_ext);
     puts(folder_name);
     return folder_name;
+}
+
+/*
+ * Applies the given function to every file (image) in temp folder.
+ * TODO: filtering already processed files.
+ */
+/* void tmpdirloop(void (*func)(char* filename)) { */
+void tmpdirloop() {
+    DIR* dir;
+    struct dirent* de;
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    puts(cwd);
+    dir = opendir(cwd);
+    while (de = readdir(dir)) {
+        puts(de->d_name);
+    }
 }
