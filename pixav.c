@@ -15,16 +15,18 @@
  */
 
 int main(int argc, char** argv) {
-    /* ffmpeg existence checking should be more user-friendly */
-    system("ffmpeg");
+    /* Should check for ffmpeg existence first */
     char* video_file_path;
-    /* Check whether specified file (or folder!) exists */
-    while (access(video_file_path, R_OK)) {
-        video_file_path = readline("Video file location: ");
-        /* A dirty hack to ensure that the path points to a file */
-        if (! strstr(video_file_path, ".")) {
-            puts("It must be a file!");
-            free(video_file_path);
+    if (argc == 2)
+        video_file_path = argv[1];
+    else {
+        /* Check whether specified file (or folder!) exists */
+        while (access(video_file_path, R_OK)) {
+            video_file_path = readline("Video file location: ");
+            /* A dirty hack to ensure that the path points to a file */
+            if (! strstr(video_file_path, ".")) {
+                puts("It must be a file!");
+            }
         }
     }
     char* video_file_name = basename(video_file_path);
