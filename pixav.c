@@ -6,6 +6,7 @@
 #include <editline/readline.h>
 #include "fsops.h"
 #include "vidops.h"
+#include "imgops.h"
 
 /*
  * Pixav is a tool that transforms a video file into an image made of
@@ -35,5 +36,5 @@ int main(int argc, char** argv) {
     mkdir(dirname, S_IRWXU);
     split_to_frames(video_file_path, dirname);
     chdir(dirname);
-    tmpdirloop();
+    tmpdirloop(&process_img);
 }

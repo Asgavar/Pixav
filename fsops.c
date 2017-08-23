@@ -50,8 +50,7 @@ int strcompare(const void* a, const void* b) {
  * Applies the given function to every file (image) in temp folder.
  * TODO: filtering already processed files.
  */
-/* void tmpdirloop(void (*func)(char* filename)) { */
-void tmpdirloop() {
+void tmpdirloop(void (*func)(char* filename)) {
     DIR* dir;
     struct dirent* de;
     char cwd[1024];
@@ -78,6 +77,6 @@ void tmpdirloop() {
     /* Names follow the frameXXXXXX pattern so their length is fixed */
     qsort(filenames, file_no, sizeof(filenames[0]), &strcompare);
     for (int i=0; i<file_no; i++) {
-        printf("%s\n", filenames[i]);
+        func(filenames[i]);
     }
 }

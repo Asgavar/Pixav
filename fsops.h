@@ -3,6 +3,6 @@
 
 char* basename(char*);
 char* temp_folder_name(char*);
-void tmpdirloop();
+void tmpdirloop(void (*func)(char* filename));
 
 #endif
