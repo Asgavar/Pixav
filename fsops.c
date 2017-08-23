@@ -16,9 +16,7 @@ char* basename(char* full_path) {
     /* The path might be needed later, so let's create a copy of it! */
     char* full_path_copy = malloc(strlen(full_path) + 1);
     strcpy(full_path_copy, full_path);
-    puts(full_path_copy);
     char* filename = strstr(full_path_copy, "/"); 
-    puts(filename);
     while (filename) {
         strncpy(full_path_copy, full_path_copy, strlen(filename));
         filename = strstr(full_path_copy, "/");
@@ -36,14 +34,16 @@ char* temp_folder_name(char* filename) {
     char* wo_ext = malloc(sizeof(filename));
     strncpy(wo_ext, filename,
             strlen(filename) - strlen(dot_position));
-    puts(wo_ext);
     char* temp_prefix = "temp_";
     char* folder_name = malloc(sizeof(wo_ext) + sizeof(temp_prefix));
     /* Funny things happen when you try to concatenate empty string */
     strcpy(folder_name, temp_prefix);
     strcat(folder_name, wo_ext);
-    puts(folder_name);
     return folder_name;
+}
+
+int strcompare(const void* a, const void* b) {
+    return strcmp(* (char * const *) a, * (char * const *) b);
 }
 
 /*
@@ -56,9 +56,28 @@ void tmpdirloop() {
     struct dirent* de;
     char cwd[1024];
     getcwd(cwd, sizeof(cwd));
-    puts(cwd);
     dir = opendir(cwd);
+    /* File counting could be put in a separate function,
+     * but imo it's less messy this way */
+    int file_count = 0;
     while (de = readdir(dir)) {
-        puts(de->d_name);
+        ++file_count;
+    }
+    rewinddir(dir);
+    char*  filenames[file_count];
+    int    file_no = 0;
+    while (de = readdir(dir)) {
+        /* printf("%d\t%s\n", (int) de->d_ino, de->d_name); */
+        /* Only . and .. have such length */
+        if (strlen(de->d_name) < 3) {
+            continue;
+        }
+        filenames[file_no] = de->d_name;
+        ++file_no;
+    }
+    /* Names follow the frameXXXXXX pattern so their length is fixed */
+    qsort(filenames, file_no, sizeof(filenames[0]), &strcompare);
+    for (int i=0; i<file_no; i++) {
+        printf("%s\n", filenames[i]);
     }
 }
