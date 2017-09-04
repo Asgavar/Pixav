@@ -36,5 +36,6 @@ int main(int argc, char** argv) {
     mkdir(dirname, S_IRWXU);
     split_to_frames(video_file_path, dirname);
     chdir(dirname);
-    tmpdirloop(&process_img);
+    tmpdirloop(&color_avg);
+    //color_avg("/home/asgavar/Pixav/samples/photo3.png");
 }
