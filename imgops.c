@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <png.h>
+#include "fsops.h"   // to get access to pixh_file_name
 
 /*
  * Full of bloat half of which I don't really understand in greater detail,
@@ -13,6 +15,10 @@
  * https://medium.com/@kevinsimper/how-to-average-rgb-colors-together-6cd3ef1ff1e5
  */
 void color_avg(char* filename) {
+    /* Yet another _that_ type of file type checking, but we need
+     * to be sure that what we throw into libpng is actually a png */
+    if (! strstr(filename, ".png"))
+        return;
     printf("\n%s\n", filename);
     FILE *fp = fopen(filename, "rb");
     png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -33,7 +39,7 @@ void color_avg(char* filename) {
         row_pointers[i] = (png_byte*) malloc(png_get_rowbytes(png, info));
     }
     png_read_image(png, row_pointers);
-    //fclose(fp);
+    fclose(fp);
     /* Three *really* important and frequently used variables, maybe I could use
      * some magical C keywords on them to speed things up */
     unsigned long long red_accumulator   = 0;
@@ -53,9 +59,16 @@ void color_avg(char* filename) {
         }
     }
     printf("RED:%llu, GREEN:%llu, BLUE:%llu\n", red_accumulator, green_accumulator, blue_accumulator);
-    double red_avg   = sqrt(red_accumulator / (double)pixel_count);
+    double red_avg   = sqrt(red_accumulator   / (double)pixel_count);
     double green_avg = sqrt(green_accumulator / (double)pixel_count);
     double blue_avg  = sqrt(blue_accumulator  / (double)pixel_count);
     printf("avg-RED:%f, avg-GREEN:%f, avg-blue:%f\n", red_avg, green_avg, blue_avg);
     printf("%lu\n", pixel_count);
+    /* Down there I write the averaged values in R-G-B\n format to .pixh file, line by line */
+    red_avg   = round(red_avg);
+    green_avg = round(green_avg);
+    blue_avg  = round(blue_avg);
+    FILE* pixh_file = fopen(pixh_file_name, "a");
+    fprintf(pixh_file, "%d-%d-%d\n", (int)red_avg, (int)green_avg, (int)blue_avg);
+    fclose(pixh_file);
 }
