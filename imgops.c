@@ -19,6 +19,9 @@ void color_avg(char* filename) {
      * to be sure that what we throw into libpng is actually a png */
     if (! strstr(filename, ".png"))
         return;
+    /* What kind of abomination is that? */
+    if (! strstr(filename, "frame"))
+        return;
     printf("\n%s\n", filename);
     FILE *fp = fopen(filename, "rb");
     png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -69,6 +72,6 @@ void color_avg(char* filename) {
     green_avg = round(green_avg);
     blue_avg  = round(blue_avg);
     FILE* pixh_file = fopen(pixh_file_name, "a");
-    fprintf(pixh_file, "%d-%d-%d\n", (int)red_avg, (int)green_avg, (int)blue_avg);
+    fprintf(pixh_file, "%03d-%03d-%03d\n", (int)red_avg, (int)green_avg, (int)blue_avg);
     fclose(pixh_file);
 }
