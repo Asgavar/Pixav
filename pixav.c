@@ -43,4 +43,5 @@ int main(int argc, char** argv) {
     // FIXME: move it^ somewhere
     tmpdirloop(&color_avg);
     //color_avg("/home/asgavar/Pixav/samples/photo3.png");
+    draw_svg();
 }

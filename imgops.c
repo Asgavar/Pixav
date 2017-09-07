@@ -75,3 +75,39 @@ void color_avg(char* filename) {
     fprintf(pixh_file, "%03d-%03d-%03d\n", (int)red_avg, (int)green_avg, (int)blue_avg);
     fclose(pixh_file);
 }
+
+/*
+ * Reads .pixh file and draws a svg image based on its contents.
+ */
+void draw_svg(void) {
+    FILE* pixh_file = fopen(pixh_file_name, "r");
+    /* FIXME: SVG filename */
+    FILE* svg_file  = fopen("sample.svg", "a");
+    int line_count = 0;
+    /* Every line is 11 chars long in fact */
+    char rgb_buf[16];
+    char* val_red = malloc(3+1);
+    char* val_green = malloc(3+1);
+    char* val_blue = malloc(3+1);
+    while (fgets(rgb_buf, 16, pixh_file)) {
+        ++line_count;
+    }
+    printf("%d", line_count);
+    rewind(pixh_file);
+    /* TODO: Shouldn't be a square */
+    //fprintf(svg_file, "<svg height="%d" width="%d">, line_count, line_count);
+    while (fgets(rgb_buf, 16, pixh_file)) {
+        puts(rgb_buf);
+        /* The format is: RRR-GGG-BBB */
+        strncpy(val_red, rgb_buf, 3);
+        strncpy(val_green, rgb_buf+4, 3);
+        strncpy(val_blue, rgb_buf+8, 3);
+        /* NUL-termination time! Turned out pointers work just like arrays */
+        val_red[3]   = '\0';
+        val_green[3] = '\0';
+        val_blue[3]  = '\0';
+        printf("\n%s\n", val_red);
+        printf("\n%s\n", val_green);
+        printf("\n%s\n", val_blue);
+    }
+}
