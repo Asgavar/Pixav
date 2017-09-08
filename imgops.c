@@ -95,7 +95,8 @@ void draw_svg(void) {
     printf("%d", line_count);
     rewind(pixh_file);
     /* TODO: Shouldn't be a square */
-    //fprintf(svg_file, "<svg height="%d" width="%d">, line_count, line_count);
+    fprintf(svg_file, "<svg height=\"%d\" width=\"%d\">", line_count, line_count);
+    int line_no = 0;
     while (fgets(rgb_buf, 16, pixh_file)) {
         puts(rgb_buf);
         /* The format is: RRR-GGG-BBB */
@@ -109,5 +110,9 @@ void draw_svg(void) {
         printf("\n%s\n", val_red);
         printf("\n%s\n", val_green);
         printf("\n%s\n", val_blue);
+        fprintf(svg_file, "<line x1=\"0\" x2=\"%d\" y1=\"%d\" y2=\"%d\" style=\"stroke:rgb(%s, %s, %s);stroke-width:5\" />", line_count, line_no*5, line_no*5, val_red, val_green, val_blue);
+        ++line_no;
     }
+    fprintf(svg_file, "</svg>");
+    fclose(svg_file);
 }
