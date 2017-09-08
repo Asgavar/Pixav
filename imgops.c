@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <png.h>
-#include "fsops.h"   // to get access to pixh_file_name
+#include "fsops.h"  // to get access to pixh_file_name
 
 /*
  * Full of bloat half of which I don't really understand in greater detail,
@@ -61,6 +61,7 @@ void color_avg(char* filename) {
             ++pixel_count;
         }
     }
+    free(row_pointers);
     printf("RED:%llu, GREEN:%llu, BLUE:%llu\n", red_accumulator, green_accumulator, blue_accumulator);
     double red_avg   = sqrt(red_accumulator   / (double)pixel_count);
     double green_avg = sqrt(green_accumulator / (double)pixel_count);
@@ -94,12 +95,13 @@ void draw_svg(void) {
     }
     printf("%d", line_count);
     rewind(pixh_file);
-    /* TODO: Shouldn't be a square */
-    fprintf(svg_file, "<svg height=\"%d\" width=\"%d\">", line_count, line_count);
+    /* A3, A4, A5 etc. have a square root of 2 (~1.414) aspect ratio */
+    fprintf(svg_file, "<svg height=\"%d\" width=\"%d\" xmlns=\"http://www.w3.org/2000/svg\">\n",
+            (int)(line_count*1.414), line_count);
     int line_no = 0;
     while (fgets(rgb_buf, 16, pixh_file)) {
         puts(rgb_buf);
-        /* The format is: RRR-GGG-BBB */
+        /* The format is: RRR-GGG-BBB and we need just RRR, GGG and BBB */
         strncpy(val_red, rgb_buf, 3);
         strncpy(val_green, rgb_buf+4, 3);
         strncpy(val_blue, rgb_buf+8, 3);
@@ -110,9 +112,12 @@ void draw_svg(void) {
         printf("\n%s\n", val_red);
         printf("\n%s\n", val_green);
         printf("\n%s\n", val_blue);
-        fprintf(svg_file, "<line x1=\"0\" x2=\"%d\" y1=\"%d\" y2=\"%d\" style=\"stroke:rgb(%s, %s, %s);stroke-width:5\" />", line_count, line_no*5, line_no*5, val_red, val_green, val_blue);
+        fprintf(svg_file,
+                "\t<line x1=\"0\" x2=\"%d\" y1=\"%d\" y2=\"%d\" style=\"stroke:rgb(%s, %s, %s);stroke-width:5\" />\n",
+                line_count, line_no*5, line_no*5, val_red, val_green, val_blue);
         ++line_no;
     }
-    fprintf(svg_file, "</svg>");
+    /* Apparently \n is needed at the end of a file */
+    fprintf(svg_file, "</svg>\n");
     fclose(svg_file);
 }
