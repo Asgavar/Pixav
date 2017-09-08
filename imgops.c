@@ -22,7 +22,7 @@ void color_avg(char* filename) {
     /* What kind of abomination is that? */
     if (! strstr(filename, "frame"))
         return;
-    printf("\n%s\n", filename);
+    printf("\ncolor_avg(%s)\n", filename);
     FILE *fp = fopen(filename, "rb");
     png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     png_infop info  = png_create_info_struct(png);
@@ -42,7 +42,6 @@ void color_avg(char* filename) {
         row_pointers[i] = (png_byte*) malloc(png_get_rowbytes(png, info));
     }
     png_read_image(png, row_pointers);
-    fclose(fp);
     /* Three *really* important and frequently used variables, maybe I could use
      * some magical C keywords on them to speed things up */
     unsigned long long red_accumulator   = 0;
@@ -52,7 +51,7 @@ void color_avg(char* filename) {
     for (int i = 0; i < height; i++) {
         png_bytep row = row_pointers[i];
         for (int j = 0; j < width; j++) {
-            /* Not sure why, but it started working properly after changing 3 to 4 */
+            /* Assumes the pngs have RGB, not RGBA color space */
             png_bytep pixel = &(row[j * 3]);
             //printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", i, j, pixel[0], pixel[1], pixel[2], pixel[3]);
             red_accumulator   += pow(pixel[0], 2);
@@ -61,7 +60,9 @@ void color_avg(char* filename) {
             ++pixel_count;
         }
     }
+    fclose(fp);
     free(row_pointers);
+    png_destroy_read_struct(&png, &info, NULL);
     printf("RED:%llu, GREEN:%llu, BLUE:%llu\n", red_accumulator, green_accumulator, blue_accumulator);
     double red_avg   = sqrt(red_accumulator   / (double)pixel_count);
     double green_avg = sqrt(green_accumulator / (double)pixel_count);
