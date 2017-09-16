@@ -60,6 +60,10 @@ void color_avg(char* filename) {
             ++pixel_count;
         }
     }
+    /* Gotcha! 8 GB of RAM should be enough now */
+    for (int i = 0; i < height; i++) {
+        free(row_pointers[i]);
+    }
     fclose(fp);
     free(row_pointers);
     png_destroy_read_struct(&png, &info, NULL);
