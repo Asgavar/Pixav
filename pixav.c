@@ -37,9 +37,12 @@ int main(int argc, char** argv) {
     split_to_frames(video_file_path, dirname);
     chdir(dirname);
     pixh_file_name = malloc(1024);
+    svg_file_name  = malloc(1024);
     /* Copy dirname without "temp_" prefix which is 5 letters long */
     strncpy(pixh_file_name, dirname+5, 1024);
+    strncpy(svg_file_name, dirname+5, 1024);
     strcat(pixh_file_name, ".pixh");
+    strcat(svg_file_name, ".svg");
     // FIXME: move it^ somewhere
     tmpdirloop(&color_avg);
     //color_avg("/home/asgavar/Pixav/samples/photo3.png");

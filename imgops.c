@@ -88,7 +88,7 @@ void color_avg(char* filename) {
 void draw_svg(void) {
     FILE* pixh_file = fopen(pixh_file_name, "r");
     /* FIXME: SVG filename */
-    FILE* svg_file  = fopen("sample.svg", "a");
+    FILE* svg_file  = fopen(svg_file_name, "a");
     int line_count = 0;
     /* Every line is 11 chars long in fact */
     char rgb_buf[16];
