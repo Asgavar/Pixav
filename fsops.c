@@ -6,25 +6,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-/* 
- * Does roughly the same thing as basename(char*) from libgen.h,
- * which means it returns pure file name with preceding path cut.
- * <Turned out it was present in <string.h>,
- * but I'll leave it as it is>
- */
-char* basename(char* full_path) {
-    /* The path might be needed later, so let's create a copy of it! */
-    char* full_path_copy = malloc(strlen(full_path) + 1);
-    strcpy(full_path_copy, full_path);
-    char* filename = strstr(full_path_copy, "/"); 
-    while (filename) {
-        strncpy(full_path_copy, full_path_copy, strlen(filename));
-        filename = strstr(full_path_copy, "/");
-        puts(filename);
-    }
-    return full_path_copy;
-}
-
 /*
  * Returns a temporary folder name which resembles the file name.
  */
